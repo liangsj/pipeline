@@ -19,7 +19,10 @@ type DBConfig struct {
 	PassWord string
 }
 
-const _defaultConnectSytle = "sqlite"
+const (
+	_defaultConnectSytle = "sqlite"
+	_defaultLogLevel     = "info"
+)
 
 type DB struct {
 	DBConfig
@@ -36,7 +39,11 @@ var logLevelSettings = map[string]int{
 
 func New(Option ...Option) (*DB, error) {
 	db := &DB{}
-	db.ConnectStyle = _defaultConnectSytle
+	{
+		db.ConnectStyle = _defaultConnectSytle
+		db.LogLevel = _defaultLogLevel
+	}
+
 	for _, opt := range Option {
 		opt(db)
 	}
@@ -56,9 +63,9 @@ func New(Option ...Option) (*DB, error) {
 		db.DB = *handler
 		return db, nil
 	}
+
 	// open mysql db with gorm
 	if db.ConnectStyle == "mysql" {
-		// open mysql db with gorm
 		dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", db.UserName, db.PassWord, db.Host, db.Port, db.Name)
 		handler, err := gorm.Open(mysql.Open(dns), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.LogLevel(logLevel)),
@@ -67,7 +74,6 @@ func New(Option ...Option) (*DB, error) {
 			return nil, err
 		}
 		db.DB = *handler
-
 		return db, nil
 	}
 	return db, nil

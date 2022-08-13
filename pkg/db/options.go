@@ -2,13 +2,26 @@ package db
 
 type Option func(*DB)
 
-
 // DBName is the name of the database to connect to.
 func DBName(DBName string) Option {
 	return func(db *DB) {
-		db.DBName = DBName
+		db.Name = DBName
 	}
-}  
+}
+
+// ConnectStyle is the style of the database to connect to.
+func ConnectStyle(ConnectStyle string) Option {
+	return func(db *DB) {
+		db.ConnectStyle = ConnectStyle
+	}
+}
+
+// LogLevel is the log level to use when connecting to the database.
+func LogLevel(LogLevel string) Option {
+	return func(db *DB) {
+		db.LogLevel = LogLevel
+	}
+}
 
 // PassWord is the password to use when connecting to the database.
 func PassWord(PassWord string) Option {
@@ -37,10 +50,3 @@ func Host(Host string) Option {
 		db.Host = Host
 	}
 }
-
-
-
-
-
-
-
